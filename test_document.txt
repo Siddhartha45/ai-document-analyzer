@@ -1,0 +1,4 @@
+{
+    "title": "IT Equipment Policy",
+    "text": "Effective March 1, 2025, all employees at Northgate Solutions are eligible for a one-time equipment stipend of $800 to set up their home office. Requests must be submitted to the IT department through the internal portal, and approved purchases are reimbursed within 10 business days of submitting a receipt. Laptops issued by the company remain company property and must be returned within 5 business days of an employee's last day. Sarah Chen, Head of IT, will review all stipend requests over $500 personally. Employees relocating to a different city must notify HR at least 30 days before their move to ensure equipment and access badges are reconfigured for the new location. Any employee who has not submitted their stipend request by June 30, 2025 will need to wait until the next fiscal year to apply.",
+}

@@ -1,0 +1,8 @@
+SQLAlchemy
+google-genai
+pydantic
+dotenv
+fastapi
+pgvector
+uvicorn
+psycopg2
