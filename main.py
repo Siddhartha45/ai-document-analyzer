@@ -4,17 +4,18 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from google import genai
 
-from .document_analyzer import (
+from document_analyzer import (
     analyze_document,
     InvalidAPIKeyError,
     RateLimitExceededError,
     ValidationExhaustedError,
 )
-from .schemas import DocumentRequest, QuestionRequest
-from .models import DocumentModel, ChunkModel
-from .database import Base, engine, get_db
-from .helpers import chunk_text
-from .rag import answer_question
+from schemas import DocumentRequest, QuestionRequest
+from models import DocumentModel, ChunkModel
+from database import Base, engine, get_db
+from helpers import chunk_text
+from rag import answer_question
+# from .tool_calling import tool_calling
 
 Base.metadata.create_all(bind=engine)
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -72,6 +73,11 @@ def create_document(request: DocumentRequest, db: Session = Depends(get_db)):
 @app.post("/documents/ask")
 def ask_question(request: QuestionRequest, db: Session = Depends(get_db)):
     return answer_question(request.question, db)
+
+
+# @app.post("/documents/tool")
+# def call_tools(request: QuestionRequest, db: Session = Depends(get_db)):
+#     return tool_calling(request.question)
 
 
 @app.get("/documents/{document_id}")

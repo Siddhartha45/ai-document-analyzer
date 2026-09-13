@@ -2,7 +2,7 @@ from sqlalchemy import JSON, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from pgvector.sqlalchemy import Vector
 
-from .database import Base
+from database import Base
 
 
 class DocumentModel(Base):

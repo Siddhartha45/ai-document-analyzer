@@ -8,7 +8,7 @@ from google.genai.errors import ClientError, ServerError
 from pydantic import ValidationError
 from dotenv import load_dotenv
 
-from .schemas import DocumentAnalysis
+from schemas import DocumentAnalysis
 
 load_dotenv()
 

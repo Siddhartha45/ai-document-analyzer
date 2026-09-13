@@ -22,8 +22,8 @@ eval_dataset = [
 ]
 
 
-from .rag import answer_question
-from .database import SessionLocal
+from rag import answer_question
+from database import SessionLocal
 
 
 def run_evaluation(eval_dataset):

@@ -41,3 +41,16 @@ class QuestionRequest(BaseModel):
     """incoming request schema for rag"""
 
     question: str = Field(min_length=1)
+
+
+class Operation(str, Enum):
+    ADD = "add"
+    SUBTRACT = "subtract"
+    MULTIPLY = "multiply"
+    DIVIDE = "divide"
+
+
+class CalculatorArgs(BaseModel):
+    a: float
+    b: float
+    operation: Operation
