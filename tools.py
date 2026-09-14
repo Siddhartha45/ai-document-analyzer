@@ -2,11 +2,10 @@ from google.genai import types
 
 from schemas import Operation
 
-
 calculator_tool = types.Tool(
     function_declarations=[
         types.FunctionDeclaration(
-            name = "calculator",
+            name="calculator",
             description="Performs a basic arithmetic operation (add, subtract, multiply, divide) on two numbers.",
             parameters={
                 "type": "object",
@@ -20,6 +19,26 @@ calculator_tool = types.Tool(
                     },
                 },
                 "required": ["a", "b", "operation"],
+            },
+        )
+    ]
+)
+
+
+rag_tool = types.Tool(
+    function_declarations=[
+        types.FunctionDeclaration(
+            name="rag",
+            description="Answers a user's question using information found in the documents that have been uploaded. Use this for factual or content-related questions about stored documents.",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "description": "The user's question, in natural language, to search for within the uploaded documents.",
+                    }
+                },
+                "required": ["question"],
             },
         )
     ]

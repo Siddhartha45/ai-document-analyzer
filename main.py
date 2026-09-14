@@ -15,7 +15,7 @@ from models import DocumentModel, ChunkModel
 from database import Base, engine, get_db
 from helpers import chunk_text
 from rag import answer_question
-# from .tool_calling import tool_calling
+from tool_calling import tool_calling
 
 Base.metadata.create_all(bind=engine)
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -70,14 +70,16 @@ def create_document(request: DocumentRequest, db: Session = Depends(get_db)):
     return db_document
 
 
-@app.post("/documents/ask")
+@app.post("/documents/ask/rag")
 def ask_question(request: QuestionRequest, db: Session = Depends(get_db)):
+    """endpoint for rag system only - for asking question"""
     return answer_question(request.question, db)
 
 
-# @app.post("/documents/tool")
-# def call_tools(request: QuestionRequest, db: Session = Depends(get_db)):
-#     return tool_calling(request.question)
+@app.post("/documents/ask")
+def call_tools(request: QuestionRequest, db: Session = Depends(get_db)):
+    """endpoint for asking question - multiple tools"""
+    return tool_calling(request.question, db)
 
 
 @app.get("/documents/{document_id}")
