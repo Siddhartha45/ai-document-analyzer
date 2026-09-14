@@ -16,6 +16,7 @@ This project was built as part of a hands-on, self-directed curriculum on applie
    - Filters out low-relevance chunks below a calibrated distance threshold
    - If no chunk is relevant enough, explicitly refuses rather than guessing
    - Otherwise, generates a grounded answer using only the retrieved context, with source document titles attached independently of the LLM's own output
+   - Alternatively, ask via a tool-calling endpoint, where the LLM decides whether to route the question to the RAG tool or a calculator tool, validates its own chosen arguments against a schema, then generates a final response using the tool's result.
 
 3. **Retrieve or delete a document** (`GET` / `DELETE /documents/{id}`)
 
@@ -32,6 +33,8 @@ document_analyze/
 ├── database.py            # DB engine/session setup
 ├── eval.py                 # Evaluation harness for the RAG pipeline
 ├── .env.example
+├── tool_calling.py     # LLM-driven tool selection (calculator, RAG) with schema-validated args
+├── tools.py            # Tool declarations
 ```
 
 **Ingestion and retrieval are decoupled**: `main.py` → `document_analyzer.py` → `helpers.py` handles ingestion (analyze, chunk, embed, store). `rag.py` handles retrieval independently — it has no knowledge of how a chunk got into the database, it only searches what exists. This separation is standard RAG architecture: the ingestion pipeline and the query pipeline are separate concerns that happen to share a data store.
@@ -51,6 +54,7 @@ document_analyze/
 - **Relevance-threshold filtering**: retrieved chunks below a similarity threshold are discarded. The threshold (`0.35`) was calibrated empirically — see [Evaluation](#evaluation) below.
 - **Source citation independent of the LLM**: the `sources` returned to the user come from a SQL join on the retrieved chunks, not from anything the model says — so the citation can't be hallucinated.
 - **Explicit refusal over guessing**: if no chunk clears the relevance threshold, the system returns "I don't have enough information to answer that question" without ever calling the LLM for that case.
+- **Tool calling with schema-validated arguments**: the model selects between a calculator and a RAG tool based on the query; before execution, the model's chosen arguments are validated against a Pydantic schema (not executed blindly), and functools.partial is used to inject runtime dependencies (like the DB session) that the LLM has no business supplying itself.
 
 ## Evaluation
 
@@ -79,4 +83,4 @@ This is an actively evolving learning project. Current known gaps:
 uvicorn main:app --reload
 ```
 
-5. `test_document.txt` contains sample title/text data you can use to try the `POST /documents` endpoint. Example questions to test against `POST /documents/ask` — including a case that should trigger the refusal path — are in `eval.py`.
+5. `test_document.txt` contains sample title/text data you can use to try the `POST /documents` endpoint. Example questions to test against `POST /documents/ask` — including a case that should trigger the refusal path — are in `eval.py`. You can also test the tool-calling behavior by asking a math question (e.g. "what is 12 * 4?") to see the calculator tool get selected instead of the RAG tool.
